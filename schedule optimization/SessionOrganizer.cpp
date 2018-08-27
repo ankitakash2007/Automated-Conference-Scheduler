@@ -97,8 +97,6 @@ void SessionOrganizer::greedy ()
                     flag = true;
                 }
             }
-                        flag = false;
-
             if(flag==true){
                 conference->setPaper ( one_change[0], one_change[1], one_change[2], one_change[7] );
                 conference->setPaper ( one_change[3], one_change[4], one_change[5], one_change[6] );
@@ -125,10 +123,10 @@ void SessionOrganizer::greedy ()
 
 vector<int> SessionOrganizer::changeOnePosition ()
 {
-    double max_score = scoreOrganization();
+    double max_diff = 0;
     //cout<<max_score<<" initial \n";
     int z;
-    double tempscore;
+    double prescore, postscore;
     vector<int> change1(8,0);
     for ( int i = 0; i < conference->getParallelTracks ( ); i++ )
     {
@@ -153,17 +151,19 @@ vector<int> SessionOrganizer::changeOnePosition ()
                             //cout <<tmpSession1.getNumberOfPapers()<<" for k "<<k<<"\n";
                             //cout <<tmpSession2.getNumberOfPapers()<<" for n "<<n<<"\n";
                             int q;
+                            prescore = PseudoScore(i,j,k)+PseudoScore(l,m,n) ; 
                             int index1 = tmpSession1.getPaper (k);
                             int index2 = tmpSession2.getPaper (n);
                             //cout<<i<<" "<<j<<" "<<k<<" "<<l<<" "<<m<<" "<<n<<"\n";
                             tmpSession1.setPaper(k,index2);
                             tmpSession2.setPaper(n,index1);
-                            tempscore = scoreOrganization();
-                            if(tempscore>max_score){
+                            postscore = PseudoScore(i,j,k)+PseudoScore(l,m,n);
+
+                            if(postscore-prescore>max_diff){
                                 change1[0] = i;change1[1] = j; change1[2] = k;
                                 change1[3] = l;change1[4] = m; change1[5] = n;
                                 change1[6] = index1; change1[7] = index2;
-                                max_score = tempscore;
+                                max_diff = postscore-prescore;
                             }
                            // cout<< "max_score "<<max_score<<" tempscore "<<tempscore<<" i,j,k,l,m,n "<<i<<j<<k<<l<<m<<n<<"\n";
                             tmpSession1.setPaper(k,index1);
@@ -187,7 +187,7 @@ vector<int> SessionOrganizer::changeOnePosition ()
             }
         }
     }
-    if(max_score == scoreOrganization()){
+    if( max_diff == 0){
         cout << "no better path";
     }
     return change1;
@@ -314,6 +314,39 @@ double SessionOrganizer::scoreOrganization ( )
         }
     }
     // cout<<score1<<" "<<score2<<"\n";
+    double score = score1 + tradeoffCoefficient*score2;
+    return score;
+}
+
+double SessionOrganizer::PseudoScore(int i, int j, int k){
+    // Sum of pairwise similarities per session.
+            Track tmpTrack = conference->getTrack ( i );
+                        Session tmpSession = tmpTrack.getSession ( j );
+
+    double score1 = 0.0;
+        int index1 = tmpSession.getPaper ( k );
+        for ( int l = k + 1; l < tmpSession.getNumberOfPapers ( ); l++ )
+        {
+            int index2 = tmpSession.getPaper ( l );
+            score1 += 1 - distanceMatrix[index1][index2];
+        }
+
+    // Sum of distances for competing papers.
+    double score2 = 0.0;
+        Track tmpTrack1 = conference->getTrack ( i );
+            Session tmpSession1 = tmpTrack1.getSession ( j );
+
+                // Get competing papers.
+                for ( int l = i + 1; l < conference->getParallelTracks ( ); l++ )
+                {
+                    Track tmpTrack2 = conference->getTrack ( l );
+                    Session tmpSession2 = tmpTrack2.getSession ( j );
+                    for ( int m = 0; m < tmpSession2.getNumberOfPapers ( ); m++ )
+                    {
+                        int index2 = tmpSession2.getPaper ( m );
+                        score2 += distanceMatrix[index1][index2];
+                    }
+                }
     double score = score1 + tradeoffCoefficient*score2;
     return score;
 }

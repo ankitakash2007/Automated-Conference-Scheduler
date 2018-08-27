@@ -76,7 +76,7 @@ public:
      * @return the score.
      */
     double scoreOrganization();
-        double tempscoreOrganization();
+    double PseudoScore(int i, int j, int k);
 
     void randomOrganizePapers ( );
 

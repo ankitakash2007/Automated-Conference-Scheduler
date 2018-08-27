@@ -24,15 +24,15 @@ int main ( int argc, char** argv )
 //        exit ( 0 );
 //    }
 //    string inputfilename ( argv[1] );
-    string inputfilename ( "in2.txt" );
+    string inputfilename ( "inputfile2.txt" );
 
     // Initialize the conference organizer.
     SessionOrganizer *organizer  = new SessionOrganizer( inputfilename );
 
     // Organize the papers into tracks based on similarity.
     organizer->randomOrganizePapers ( );
-    //double score = organizer->scoreOrganization ( );
-    //cout<< "score:"<<score<<endl;
+    // double score = organizer->scoreOrganization ( );
+    // cout<< "score:"<<score<<endl;
     //organizer->printSessionOrganiser ( argv[2]);
     //organizer->printSessionOrganiser ( "output.txt");
 
