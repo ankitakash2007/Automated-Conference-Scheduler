@@ -38,6 +38,8 @@ int Session::getPaper ( int index )
 {
     if ( index < papersInSession )
     {
+        // cout <<papersInSession<<" for k "<<index <<"\n";
+
         return papers[index];
     }
     else

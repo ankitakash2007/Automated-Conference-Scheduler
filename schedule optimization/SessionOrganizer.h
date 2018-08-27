@@ -36,6 +36,8 @@ private:
     int sessionsInTrack ;
 
     Conference *conference;
+     Conference *tempconference;
+
 
     double processingTimeInMinutes ;
     double tradeoffCoefficient ; // the tradeoff coefficient
@@ -74,6 +76,9 @@ public:
      * @return the score.
      */
     double scoreOrganization();
+        double tempscoreOrganization();
+
+    void randomOrganizePapers ( );
 
     void greedy ();
 
