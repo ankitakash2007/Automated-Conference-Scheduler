@@ -24,15 +24,17 @@ int main ( int argc, char** argv )
 //        exit ( 0 );
 //    }
 //    string inputfilename ( argv[1] );
-    string inputfilename ( "inputfile2.txt" );
+    
+    string inputfilename ( "in2.txt" );
 
     // Initialize the conference organizer.
     SessionOrganizer *organizer  = new SessionOrganizer( inputfilename );
 
     // Organize the papers into tracks based on similarity.
-    organizer->randomOrganizePapers ( );
-    // double score = organizer->scoreOrganization ( );
-    // cout<< "score:"<<score<<endl;
+   //  organizer->organizePapers ( );
+    organizer->initialstart();
+    double score = organizer->scoreOrganization ( );
+    cout<< "score:"<<score<<endl;
     //organizer->printSessionOrganiser ( argv[2]);
     //organizer->printSessionOrganiser ( "output.txt");
 
@@ -42,7 +44,7 @@ int main ( int argc, char** argv )
     organizer->printSessionOrganiser ( "output.txt");
 
     // Score the organization against the gold standard.
-    double score = organizer->scoreOrganization ( );
+     score = organizer->scoreOrganization ( );
     cout<< "score:"<<score<<endl;
 
     return 0;

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <ctime>
 
 
 #include "Conference.h"
@@ -69,20 +70,23 @@ public:
      * @return the distance matrix.
      */
     double** getDistanceMatrix();
-    
+    void initialstart();
+
     
     /**
      * Score the organization.
      * @return the score.
      */
     double scoreOrganization();
+    double tempscoreOrganization();
     double PseudoScore(int i, int j, int k);
 
     void randomOrganizePapers ( );
 
     void greedy ();
 
-    vector<int> changeOnePosition ();
+    vector<int> changeOnePositionbig ();
+    vector<int> changeOnePositionsmall ();
     
     
     void printSessionOrganiser(char *);
