@@ -11,7 +11,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <ctime>
 
 
 #include "Conference.h"
@@ -86,6 +85,8 @@ public:
     void greedy ();
 
     vector<int> changeOnePositionbig ();
+    vector<int> changeOnePositionbigrandom ();
+
     vector<int> changeOnePositionsmall ();
     
     

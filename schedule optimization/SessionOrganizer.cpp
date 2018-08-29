@@ -9,8 +9,8 @@
 
 #include "SessionOrganizer.h"
 #include "Util.h"
-#include <vector>
 #include <ctime>
+#include <vector>
 
 SessionOrganizer::SessionOrganizer ( )
 {
@@ -73,6 +73,10 @@ void SessionOrganizer::initialstart()
                         }
 
                         if(flag==true){//l is not in vector
+                            if(j==0&&k==0){
+                                putvalue=l;
+                                l=parallelTracks*sessionsInTrack*papersInSession;
+                            }
                             for(int m=0; m<k;m++){
                                 Track tmpTrack = conference->getTrack ( j );
                                 Session tmpSession = tmpTrack.getSession ( i );
@@ -158,10 +162,9 @@ void SessionOrganizer::greedy ()
 
     //     }
     // }
-    for (int i = 0; i < 10&& duration<60; i++){
+    for (int i = 0; i < 10&&duration<60; i++){
         if (i!=0) randomOrganizePapers();
         bool flag = true;
-        start = std::clock();
         while(flag == true && duration<60){
             vector<int> one_change(8);
             if(parallelTracks*sessionsInTrack*papersInSession>30){
@@ -185,7 +188,7 @@ void SessionOrganizer::greedy ()
                 //cout<<"local search "<<one_change[0]<<one_change[1]<<one_change[2]<<one_change[3]<<one_change[4]<<one_change[5]<<one_change[6]<<one_change[7]<<"\n";
                 double score = scoreOrganization();
 
-                //cout<<"score for i: "<<i<<" is "<<score<<"\n";
+                cout<<"                            score for i: "<<i<<" is "<<score<<"\n";
 
             }
             else{
@@ -196,12 +199,12 @@ void SessionOrganizer::greedy ()
                 //     max = score;
                 //     //cout<<tempconference->scoreOrganization()<<" temp "<<conference->scoreOrganization();
                 // }
-                //cout<<"score for i: "<<i<<" is "<<score<<"\n";
+                cout<<"score for i: "<<i<<" is "<<score<<"\n";
             }
-            duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+        duration = (std::clock()-start)/(double) CLOCKS_PER_SEC;
         }
-
      }
+
     // *conference = *tempconference;
 }
 vector<int> SessionOrganizer::changeOnePositionsmall ()
@@ -257,6 +260,95 @@ vector<int> SessionOrganizer::changeOnePositionsmall ()
     cout<<"small:"<<max_diff<<"\n";
     return change1;
 }
+// vector<int> SessionOrganizer::changeOnePositionbigrandom(){
+//     bool flag=true;
+//         vector<int> change1(8,0);
+
+//     while(flag==true){
+//         int i = rand()%parallelTracks;
+//         int j = rand()%sessionsInTrack;
+//         int k = rand()%papersInSession;
+//         Track tmpTrack1 = conference->getTrack ( i );
+//         Session tmpSession1 = tmpTrack1.getSession ( j );
+//         int index1 = tmpSession1.getPaper (k);
+//         double min = 2.0;
+//         int minindex=0;
+//         for(int l=0;l<parallelTracks*sessionsInTrack*papersInSession;l++){
+//             if(distanceMatrix[index1][l]<min && index1!=l){
+//                 min=distanceMatrix[index1][l];
+//                 minindex=l;
+//             }
+//         }
+//         //find position of minindex
+//         for ( int l = 0; l < conference->getParallelTracks ( ); l++ )
+//         {
+//             Track tmpTrack2 = conference->getTrack ( l );
+//             for ( int m = 0; m < tmpTrack2.getNumberOfSessions  ( ); m++ )
+//             {
+//                 Session tmpSession2 = tmpTrack2.getSession ( m );
+//                 for ( int n = 0; n < tmpSession2.getNumberOfPapers ( ); n++ )
+//                 {
+//                     int index2 = tmpSession2.getPaper (n);
+//                     if(index2==minindex){
+//                         change1[0]=l;change1[1]=m;change1[2]=n;
+
+//                     }
+//                 }
+//             }
+//         }
+//         double tempmax=0;
+//         int k2=-1;
+//         int maxindex;
+//         //find max in same i and j
+//         for ( int n = 0; n < tmpSession1.getNumberOfPapers ( ); n++ ){
+//             int index2 = tmpSession1.getPaper (n);
+//             if(distanceMatrix[index1][index2]>tempmax && n!=k){
+//                 tempmax=distanceMatrix[index1][index2];
+//                 k2=n;
+//                 maxindex=index2;
+//             }
+//         }
+//         if(k2==-1){
+//             continue;
+//         }
+//         double max_diff = 0;
+//         double prescore, postscore;
+//         prescore = PseudoScore(change1[0],change1[1],change1[2])+PseudoScore(i,j,k2) ; 
+//         //double bscore = scoreOrganization();
+//         Track tmpTrack2 = conference->getTrack ( change1[0] );
+//         Session tmpSession2 = tmpTrack2.getSession ( change1[1] );
+//         tmpSession2.setPaper(change1[2],maxindex);  //on this
+//         tmpSession1.setPaper(k2,minindex);
+//         //double ascore = scoreOrganization();
+//         // tmpSession1.setPaper(change1[2],maxindex);  //on this
+//         // tmpSession2.setPaper(k2,minindex);
+//         postscore = PseudoScore(change1[0],change1[1],change1[2])+PseudoScore(i,j,k2) ;
+//         //cout<<ascore<<"after score"<<bscore<<" score,pseudo "<<postscore-prescore<<"\n";
+
+//         if(postscore-prescore>max_diff &&(i!=change1[0]||j!=change1[1])){
+//             change1[3] = i;change1[4] = j; change1[5] = k2;
+//             change1[6] = minindex; change1[7] = maxindex ;
+//             //max_diff = postscore-prescore;
+//             flag=false;
+//             cout<<"i,j,k,index: "<<i<<","<<j<<","<<k<<","<<index1<<" min i,j,k,index: "<<change1[0]<<","<<change1[1]<<","<<change1[2]<<","<<minindex<<" max i,j,k,index "<<i<<","<<j<<","<<k2<<","<<maxindex<<"\n";
+
+//         }
+//         else{
+//             cout<<"no     "<<"i,j,k,index: "<<i<<","<<j<<","<<k<<","<<index1<<" min i,j,k,index: "<<change1[0]<<","<<change1[1]<<","<<change1[2]<<","<<minindex<<" max i,j,k,index "<<i<<","<<j<<","<<k2<<","<<maxindex<<"\n";
+//         }
+//          //bscore = scoreOrganization();
+
+//         tmpSession2.setPaper(change1[2],minindex);
+//         tmpSession1.setPaper(k2,maxindex);
+//          //ascore = scoreOrganization();
+//         //cout<<bscore<<"after score"<<ascore<<"\n";
+
+//     }
+//     return change1;
+   
+
+// }
+
 
 vector<int> SessionOrganizer::changeOnePositionbig ()
 {
@@ -264,8 +356,11 @@ vector<int> SessionOrganizer::changeOnePositionbig ()
     double max_diff = 0;
     //cout<<max_score<<" initial \n";
     int z;
+    double score;
+    score = scoreOrganization();
     double prescore, postscore;
     vector<int> change1(8,0);
+    int count=0;
     for ( int i = 0; i < conference->getParallelTracks ( ); i++ )
     {
         Track tmpTrack1 = conference->getTrack ( i );
@@ -293,18 +388,24 @@ vector<int> SessionOrganizer::changeOnePositionbig ()
                             tmpSession1.setPaper(k,index2);
                             tmpSession2.setPaper(n,index1);
                             postscore = PseudoScore(i,j,k)+PseudoScore(l,m,n);
-                            bool flag= false;
+                            //bool flag= false;
                             if(postscore-prescore>max_diff){
                                 change1[0] = i;change1[1] = j; change1[2] = k;
                                 change1[3] = l;change1[4] = m; change1[5] = n;
                                 change1[6] = index1; change1[7] = index2;
                                 max_diff = postscore-prescore;
-                                flag  = true;
+                                count++;
+                                //flag  = true;
+                            }
+                            else{
+                                int tempq = postscore-prescore;
+                                tmpSession1.setPaper(k,index1);
+                                tmpSession2.setPaper(n,index2);
+                            //    cout<<"not found max_diff: "<<max_diff<<" temp :"<<tempq<<"\n";
                             }
                            // cout<< "max_score "<<max_score<<" tempscore "<<tempscore<<" i,j,k,l,m,n "<<i<<j<<k<<l<<m<<n<<"\n";
-                            tmpSession1.setPaper(k,index1);
-                            tmpSession2.setPaper(n,index2);
-                            if(flag == true){
+
+                            if(count == 10){
                                 i=j=k=l=m=n=2000;
                             }
                         }
@@ -452,7 +553,6 @@ double SessionOrganizer::scoreOrganization ( )
             }
         }
     }
-    // cout<<score1<<" "<<score2<<"\n";
     double score = score1 + tradeoffCoefficient*score2;
     return score;
 }

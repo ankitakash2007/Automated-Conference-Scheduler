@@ -44,7 +44,7 @@ int Session::getPaper ( int index )
     }
     else
     {
-        cout << "Index out of bound - Session::getPaper" << endl;
+       // cout << "Index out of bound - Session::getPaper" << endl;
         exit ( 0 );
     }
 }
@@ -53,6 +53,7 @@ void Session::setPaper ( int index, int paperId )
 {
     if ( index < papersInSession )
     {
+       // cout<<"                      seting paper:"<<index<<","<<paperId<<"\n";
         papers[index] = paperId;
     }
     else

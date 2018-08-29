@@ -24,7 +24,6 @@ int main ( int argc, char** argv )
 //        exit ( 0 );
 //    }
 //    string inputfilename ( argv[1] );
-    
     string inputfilename ( "in2.txt" );
 
     // Initialize the conference organizer.
